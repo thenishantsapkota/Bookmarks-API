@@ -33,6 +33,9 @@ export class BookmarksService {
         where: {
           userId: user.id,
         },
+        orderBy: {
+          id: 'asc',
+        },
       })
       .catch((error) => {
         throw error;
@@ -59,6 +62,61 @@ export class BookmarksService {
     delete bookmark.userId;
     return {
       message: `Bookmark with ID ${id} fetched successfully`,
+      bookmark,
+    };
+  }
+
+  async updateBookMark(id: number, user: User, dto: BookmarkDto) {
+    const bookmark = await this.prisma.bookMark.findFirst({
+      where: {
+        id: id,
+        userId: user.id,
+      },
+    });
+    if (!bookmark) {
+      throw new NotFoundException('No bookmark with that ID found!');
+    }
+
+    await this.prisma.bookMark.update({
+      where: {
+        id: id,
+      },
+      data: {
+        title: dto.title,
+        description: dto.description,
+        link: dto.link,
+      },
+    });
+    delete bookmark.userId;
+    return {
+      message: `Bookmark with ID ${id} updated successfully!`,
+      bookmark,
+    };
+  }
+
+  async deleteBookMark(id: number, user: User) {
+    const bookmark = await this.prisma.bookMark.findFirst({
+      where: {
+        id: id,
+        userId: user.id,
+      },
+    });
+
+    if (!bookmark) {
+      throw new NotFoundException('No bookmark with that ID found!');
+    }
+
+    await this.prisma.bookMark.deleteMany({
+      where: {
+        id: id,
+        userId: user.id,
+      },
+    });
+
+    delete bookmark.userId;
+
+    return {
+      message: `Bookmark with ID ${id} deleted successfully!`,
       bookmark,
     };
   }

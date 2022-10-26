@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
@@ -30,5 +32,19 @@ export class BookmarksController {
   @Get('/:id')
   getBookMark(@Param('id', new ParseIntPipe()) id, @GetUser() user: User) {
     return this.service.getBookMark(id, user);
+  }
+
+  @Put('/:id')
+  updateBookMark(
+    @Param('id', new ParseIntPipe()) id,
+    @GetUser() user: User,
+    @Body() dto: BookmarkDto,
+  ) {
+    return this.service.updateBookMark(id, user, dto);
+  }
+
+  @Delete('/:id')
+  deleteBookMark(@Param('id', new ParseIntPipe()) id, @GetUser() user: User) {
+    return this.service.deleteBookMark(id, user);
   }
 }
