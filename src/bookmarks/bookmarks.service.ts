@@ -22,8 +22,8 @@ export class BookmarksService {
 
     delete bookmark.userId;
     return {
-      bookmark,
       message: 'Bookmark created successfully',
+      bookmark,
     };
   }
 
